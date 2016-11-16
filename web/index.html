@@ -1,0 +1,42 @@
+<html>
+<head>
+<title>Page</title>
+
+</head>
+<body>
+<h1>Page</page>
+<p><a href="https://google.com">Google</a></p>
+<p><a href="#" onclick="webChannel.objects.external.callFromJS();">Call external</a></p>
+<p><a href="#" id="sendAjax">Send ajax</a></p>
+
+<div id="div1"></div>
+
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="qrc:///qtwebchannel/qwebchannel.js"></script>
+<script>
+
+var webChannel = new QWebChannel(qt.webChannelTransport, function(channel){
+    window.external = channel.objects.external;
+});
+
+var ajaxReq = function(){
+  $("#sendAjax").click(function(){
+    console.log("send ajax");
+    alert("send ajax");
+    $.ajax(
+      {
+        url: "http://shell-dev2.swissmeda.com/login/login.php",
+        success: function(result) {
+          $("#div1").html(result);
+        }
+      }
+    );
+  });
+};
+
+ajaxReq();
+
+</script>
+
+</body>
+</html>
