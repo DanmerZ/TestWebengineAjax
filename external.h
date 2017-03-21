@@ -11,7 +11,7 @@ public:
     explicit External(QObject *parent = 0);
 
 public slots:
-    void callFromJS();
+    int callFromJS(QString str);
 };
 
 #endif // EXTERNAL_H

@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "database.h"
 
 namespace Ui {
 class MainWindow;
@@ -21,6 +22,7 @@ private:
     Ui::MainWindow *ui;
 
     QWebEngineView *view;
+    Database *db;
 };
 
 #endif // MAINWINDOW_H

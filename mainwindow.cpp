@@ -16,12 +16,16 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QWebChannel *channel = new QWebChannel;
     External *external = new External;
+    db = Database::getInstance();
     channel->registerObject("external", external);
+    channel->registerObject("database", db);
     view->page()->setWebChannel(channel);
 
     view->page()->settings()->globalSettings()->setAttribute(QWebEngineSettings::WebAttribute::LocalContentCanAccessRemoteUrls, true);
 
     setCentralWidget(view);
+
+    qDebug() << db->query("SELECT * FROM test;");
 }
 
 MainWindow::~MainWindow()

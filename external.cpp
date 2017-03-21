@@ -7,7 +7,9 @@ External::External(QObject *parent)
 
 }
 
-void External::callFromJS()
+int External::callFromJS(QString str)
 {
+    qDebug() << str;
     QMessageBox::about(nullptr, "Desktop Viewer", "Desktop Viewer");
+    return 42;
 }
