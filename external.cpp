@@ -1,5 +1,6 @@
 #include "external.h"
 #include <QDebug>
+#include <QMessageBox>
 
 External::External(QObject *parent)
 {
@@ -8,5 +9,5 @@ External::External(QObject *parent)
 
 void External::callFromJS()
 {
-    qDebug() << "Called from JS";
+    QMessageBox::about(nullptr, "Desktop Viewer", "Desktop Viewer");
 }

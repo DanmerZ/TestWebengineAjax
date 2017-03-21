@@ -11,7 +11,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     view = new QWebEngineView(this);
-    view->setUrl(QUrl::fromLocalFile("/Users/oleh/Documents/QtPojects/QtTests/TestReact/web/index.html"));
+
+    view->setUrl(QUrl::fromLocalFile( QCoreApplication::applicationDirPath() + "/web/index.html"));
 
     QWebChannel *channel = new QWebChannel;
     External *external = new External;
