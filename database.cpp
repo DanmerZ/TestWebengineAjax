@@ -3,6 +3,10 @@
 #include <QSqlQuery>
 #include <QSqlRecord>
 #include <QVariant>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonValue>
+#include <QJsonArray>
 #include <QDebug>
 
 Database * Database::instance = nullptr;
@@ -14,8 +18,9 @@ Database::Database(QObject *parent)
     database.setDatabaseName("test.db");
     bool isOpen = database.open();
     if (!isOpen)
-        QMessageBox::warning(nullptr, "DB problem", "Database wasn't opened, sorry, appologize, it's my fault... :(",
-                             QMessageBox::Cancel);
+        showError("Database wasn't opened, sorry, appologize, it's my fault... :(");
+//        QMessageBox::warning(nullptr, "DB problem", "Database wasn't opened, sorry, appologize, it's my fault... :(",
+//                             QMessageBox::Cancel);
 }
 
 Database::~Database()
@@ -30,40 +35,52 @@ Database *Database::getInstance()
     return instance;
 }
 
+void Database::showError(QString err)
+{
+    qDebug() << err;
+    emitError(err);
+}
+
 bool Database::exec(QString sqlString)
 {
     QSqlQuery query(database);
     return query.exec(sqlString);
 }
 
-QList<QList<QString>> Database::query(QString sqlString)
+QString Database::queryJson(QString sqlString)
 {
-    QList<QList<QString>> result;
     QSqlQuery query(database);
 
     if (!database.isOpen())
     {
-        QMessageBox::warning(nullptr, "DB problem", "Database isn't opened, sorry:(",
-                             QMessageBox::Cancel);
-        return result;
+        //QMessageBox::warning(nullptr, "DB problem", "Database isn't opened, sorry:(",
+        //                     QMessageBox::Cancel);
+        showError("Database isn't opened, sorry:(");
+        return "[]";
     }
 
     bool bRet = query.exec(sqlString);
     if (!bRet)
     {
-        QMessageBox::warning(nullptr, "DB problem", "Query: " + sqlString,
-                             QMessageBox::Cancel);
-        return result;
+        //QMessageBox::warning(nullptr, "DB problem", "Query failed: " + sqlString,
+        //                     QMessageBox::Cancel);
+        showError("Query failed: " + sqlString);
+        return "[]";
     }
 
     int recordSize = query.record().count();
+    QJsonArray jsonArray;
 
     while(query.next())
     {
-        QStringList row;
+        QJsonObject obj;
         for (int i = 0; i < recordSize; i++)
-            row << query.value(i).toString();
-        result.append(row);
+        {
+            QString key = query.record().fieldName(i);
+            obj[key] = query.value(i).toString();
+        }
+        jsonArray.append(QJsonValue(obj));
     }
-    return result;
+
+    return QJsonDocument(jsonArray).toJson();
 }

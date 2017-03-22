@@ -18,9 +18,13 @@ public:
     virtual ~Database();
     static Database *getInstance();
 
+    void showError(QString err);
+signals:
+    void emitError(QString err);
+
 public slots:
     bool exec(QString sqlString);
-    QList<QList<QString>> query(QString sqlString);
+    QString queryJson(QString sqlString);
 };
 
 #endif // DATABASE_H

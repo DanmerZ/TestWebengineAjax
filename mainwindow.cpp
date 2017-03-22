@@ -25,7 +25,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     setCentralWidget(view);
 
-    qDebug() << db->query("SELECT * FROM test;");
+    connect(db, &Database::emitError, [=](QString err) {
+        ui->statusBar->showMessage(err);
+        view->page()->runJavaScript(QString("console.log('Database error: ' + '%1');").arg(err));
+    });
 }
 
 MainWindow::~MainWindow()
@@ -33,3 +36,8 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+
+void MainWindow::on_actionRun_localhost_3000_triggered()
+{
+    QDesktopServices::openUrl(QUrl("http://localhost:3000"));
+}
